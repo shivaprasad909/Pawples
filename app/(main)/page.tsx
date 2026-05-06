@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// ─── Static fallback data (Sprint 3 CMS will replace via Supabase) ────────────
+// ─── Static fallback data (Sprint 4 Supabase will replace these) ─────────────
+
+// Blog posts: empty array = section hidden. Sprint 4 fetches published posts from Supabase.
+const blogPosts: { slug: string; title: string; excerpt: string; category: string; coverImage?: string }[] = [];
+
 
 const petCategories = [
   {
@@ -714,6 +718,45 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Blog Preview (PAW-031) ────────────────────────────────────────── */}
+      {/* Sprint 4 will replace blogPosts with a Supabase fetch; hidden when empty */}
+      {blogPosts.length > 0 && (
+        <section className="py-20 bg-ivory-dark">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <span className="inline-block bg-plum/10 text-plum text-sm font-semibold font-dm-sans px-4 py-1.5 rounded-full mb-4">
+                  From the blog
+                </span>
+                <h2 className="section-heading text-4xl">Tips, stories & pet care</h2>
+              </div>
+              <Link href="/blog" className="hidden sm:inline-flex items-center gap-2 text-plum font-nunito font-bold text-sm hover:text-plum-600 transition-colors">
+                All posts
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {blogPosts.map((post) => (
+                <Link key={post.slug} href={`/blog/${post.slug}`} className="group card overflow-hidden">
+                  <div className="relative h-48 overflow-hidden bg-ivory-dark">
+                    {post.coverImage && (
+                      <Image src={post.coverImage} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <span className="text-xs text-plum font-semibold font-dm-sans uppercase tracking-wider">{post.category}</span>
+                    <h3 className="font-nunito font-bold text-bark text-base mt-1 group-hover:text-plum transition-colors line-clamp-2">{post.title}</h3>
+                    <p className="text-bark/55 text-sm font-dm-sans mt-2 line-clamp-2">{post.excerpt}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Final CTA ─────────────────────────────────────────────────────── */}
       <section className="py-24 bg-ivory text-center">
